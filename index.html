@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timer</title>
+    <style>
+        body {
+            background-color: #b3b3b3;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .timer-display {
+            font-size: 48px;
+            background-color: #00b300;
+            color: black;
+            padding: 20px;
+            border-radius: 40px;
+            margin-bottom: 20px;
+        }
+
+        .preset-buttons, .control-buttons, .sound-buttons {
+            margin-bottom: 20px;
+        }
+
+        .preset-btn, .control-btn, .sound-btn {
+            font-size: 24px;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+
+        .preset-btn {
+            background-color: #00b300;
+            color: black;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .control-btn {
+            background-color: #00b300;
+            color: black;
+            border: none;
+            width: 200px;
+        }
+
+        .stop-btn {
+            background-color: #ff6666;
+            color: black;
+            border: none;
+            width: 200px;
+        }
+
+        .sound-btn {
+            background-color: #4d79ff;
+            color: white;
+            border: none;
+            width: 300px;
+        }
+
+        .sound {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Timer Display -->
+        <div class="timer-display" id="timer">0:0:0:00</div>
+
+        <!-- Preset Timer Buttons -->
+        <div class="preset-buttons">
+            <button class="preset-btn" onclick="setTimer(60)">60</button>
+            <button class="preset-btn" onclick="setTimer(30)">30</button>
+            <button class="preset-btn" onclick="setTimer(15)">15</button>
+        </div>
+
+        <!-- Custom Timer Button -->
+        <div class="control-buttons">
+            <button class="control-btn" onclick="setCustomTime()">Custom</button>
+        </div>
+
+        <!-- Start and Stop Buttons -->
+        <div class="control-buttons">
+            <button class="stop-btn" onclick="stopTimer()">Stop</button>
+            <button class="control-btn" onclick="startTimer()">Start</button>
+        </div>
+
+        <!-- Select a Sound Button -->
+        <div class="sound-buttons">
+            <button class="sound-btn" onclick="playSound()">Select a sound</button>
+        </div>
+
+        <!-- Sounds -->
+        <audio id="sound1" class="sound" src="https://www.soundjay.com/button/sounds/beep-07.mp3"></audio>
+        <audio id="sound2" class="sound" src="https://www.soundjay.com/button/sounds/beep-06.mp3"></audio>
+        <audio id="sound3" class="sound" src="https://www.soundjay.com/button/sounds/beep-05.mp3"></audio>
+    </div>
+
+    <script>
+        let timer;
+        let timeLeft = 0;
+
+        // Set timer to preset values
+        function setTimer(seconds) {
+            timeLeft = seconds;
+            updateDisplay();
+        }
+
+        // Set custom time
+        function setCustomTime() {
+            const customTime = prompt("Enter custom time in seconds:");
+            if (!isNaN(customTime) && customTime > 0) {
+                timeLeft = parseInt(customTime);
+                updateDisplay();
+            }
+        }
+
+        // Update the timer display
+        function updateDisplay() {
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            document.getElementById('timer').innerHTML = `0:${minutes}:${seconds}`;
+        }
+
+        // Start the timer
+        function startTimer() {
+            if (timer) return;
+            timer = setInterval(function () {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    updateDisplay();
+                } else {
+                    clearInterval(timer);
+                    playSound();
+                    timer = null;
+                }
+            }, 1000);
+        }
+
+        // Stop the timer
+        function stopTimer() {
+            clearInterval(timer);
+            timer = null;
+        }
+
+        // Play selected sound
+        function playSound() {
+            const soundOptions = ["sound1", "sound2", "sound3"];
+            const selectedSound = prompt("Enter sound (1, 2, or 3):");
+            if (selectedSound >= 1 && selectedSound <= 3) {
+                document.getElementById(soundOptions[selectedSound - 1]).play();
+            } else {
+                alert("Invalid sound selection");
+            }
+        }
+    </script>
+
+</body>
+</html>
